@@ -1,6 +1,6 @@
 import swc from "unplugin-swc";
 import { defineConfig } from "vitest/config";
-import tsCOnfigPaths from "vite-tsconfig-paths";
+import tsConfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
 	test: {
