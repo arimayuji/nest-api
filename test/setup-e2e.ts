@@ -17,12 +17,13 @@ function generateUniqueDatabaseURL(schemaId: string) {
 }
 
 const schemaId = randomUUID();
+
 beforeAll(async () => {
 	const databaseUrl = generateUniqueDatabaseURL(schemaId);
 
 	process.env.DATABASE_URL = databaseUrl;
 
-	execSync("npm prisma migrate deploy");
+	execSync("npx prisma migrate deploy");
 });
 
 afterAll(async () => {
