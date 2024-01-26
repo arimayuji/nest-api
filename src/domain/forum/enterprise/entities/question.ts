@@ -12,8 +12,8 @@ export interface QuestionProps {
 	authorId: UniqueEntityId;
 	createdAt: Date;
 	attachments: QuestionAttachmentList;
-	updatedAt?: Date;
-	bestAnswerId?: UniqueEntityId;
+	updatedAt?: Date | null;
+	bestAnswerId?: UniqueEntityId | null;
 }
 export class Question extends AggregateRoot<QuestionProps> {
 	private touch() {
@@ -38,15 +38,8 @@ export class Question extends AggregateRoot<QuestionProps> {
 		this.touch();
 	}
 
-	set bestAnswerId(bestAnswerId: UniqueEntityId | undefined) {
-		if (bestAnswerId === undefined) {
-			return;
-		}
-
-		if (
-			this.props.bestAnswerId === undefined ||
-			this.props.bestAnswerId.equals(bestAnswerId)
-		) {
+	set bestAnswerId(bestAnswerId: UniqueEntityId | undefined | null) {
+		if (bestAnswerId && bestAnswerId !== this.props.bestAnswerId) {
 			this.addDomainEvent(
 				new QuestionBestAnswerChosenEvent(this, bestAnswerId)
 			);
