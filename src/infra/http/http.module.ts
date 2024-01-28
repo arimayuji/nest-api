@@ -19,6 +19,7 @@ import { CryptoGraphyModule } from "../cryptography/cryptography.module";
 		FetchRecentQuestionsController,
 	],
 	providers: [
+		
 		CreateQuestionUseCase,
 		FetchLatestQuestionsUseCase,
 		AuthenticateStudentUseCase,
