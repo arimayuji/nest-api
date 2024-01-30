@@ -14,7 +14,7 @@ import { EnvModule } from "./env/env.module";
 		}),
 		EnvModule,
 		AuthModule,
-		HttpModule,
+		HttpModule, 
 	],
 	providers: [EnvService],
 })

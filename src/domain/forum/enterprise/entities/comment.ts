@@ -8,7 +8,6 @@ export interface CommentProps {
 	updatedAt?: Date | null;
 }
 
-
 export abstract class Comment<
 	Props extends CommentProps,
 > extends Entity<Props> {
