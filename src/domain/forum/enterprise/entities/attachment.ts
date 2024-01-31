@@ -2,16 +2,15 @@ import { Entity } from "@/core/entities/entity";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 
 interface AttachmentProps {
-	link: string;
+	url: string;
 	title: string;
-	parentType: "answer" | "question";
 }
 export class Attachment extends Entity<AttachmentProps> {
 	get title() {
 		return this.props.title;
 	}
-	get link() {
-		return this.props.link;
+	get url() {
+		return this.props.url;
 	}
 
 	static create(props: AttachmentProps, id?: UniqueEntityId) {
