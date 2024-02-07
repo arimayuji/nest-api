@@ -10,8 +10,10 @@ import { CurrentUser } from "@/infra/auth/current-user-decorator";
 import { ZodValidationPipe } from "@/infra/http/pipes/zod-validation-pipe";
 import { z } from "zod";
 import { AnswerQuestionUseCase } from "@/domain/forum/application/use-cases/answer-questions";
+
 const answerQuestionBodySchema = z.object({
 	content: z.string(),
+	attachments: z.array(z.string().uuid()),
 });
 type AnswerQuestionBodySchema = z.infer<typeof answerQuestionBodySchema>;
 
@@ -28,14 +30,14 @@ export class AnswerQuestionController {
 		@Body(bodyValidationPipe) body: AnswerQuestionBodySchema,
 		@Param("questionId") questionId: string
 	) {
-		const { content } = body;
+		const { content, attachments } = body;
 		const userId = user.sub;
 
 		const result = await this.answerQuestionUseCase.execute({
 			content,
 			questionId,
 			authorId: userId,
-			attachmentsIds: [],
+			attachmentsIds: attachments,
 		});
 
 		if (result.isLeft()) {
