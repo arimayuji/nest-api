@@ -44,14 +44,20 @@ describe("Authenticate Student", () => {
 	});
 
 	// RangeError: Maximum call stack size exceeded
-	it.skip("should hash student password upon registration", async () => {
+	it("should hash student password upon registration", async () => {
+		const student = makeStudent({
+			email: "johndoe@example.com",
+			password: await fakeHasher.hash("123456"),
+		});
+
+		inMemoryStudentsRepository.items.push(student);
+		
 		const result = await sut.execute({
 			email: "johndoe@example.com",
-			name: "John Doe",
 			password: "123456",
 		});
 
-		const hashedPassword = await hashGenerator.hash("123456");
+		const hashedPassword = await fakeHasher.hash("123456");
 
 		expect(result.isRight()).toBe(true);
 		expect(inMemoryStudentsRepository.items[0].password).toEqual(
