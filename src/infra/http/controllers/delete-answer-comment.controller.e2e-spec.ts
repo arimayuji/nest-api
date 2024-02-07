@@ -74,7 +74,6 @@ describe("Delete answer comment (E2E)", () => {
 			},
 		});
 
-		console.log(commentAnswerOnDatabase);
 		expect(commentAnswerOnDatabase).toBeNull();
 	});
 });
