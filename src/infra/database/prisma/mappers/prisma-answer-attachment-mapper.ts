@@ -15,4 +15,41 @@ export class PrismaAnswerAttachmentMapper {
 			new UniqueEntityId(raw.id)
 		);
 	}
+
+	static toPrismaUpdateMany(
+		attachments: AnswerAttachment[]
+	): Prisma.AttachmentUpdateManyArgs {
+		const attachmentIds = attachments.map((attachment) => {
+			return attachment.attachmentId.toString();
+		});
+
+		const answerId = attachments[0].answerId.toString();
+
+		return {
+			where: {
+				id: {
+					in: attachmentIds,
+				},
+			},
+			data: {
+				answerId,
+			},
+		};
+	}
+
+	static toPrismaDeleteMany(
+		attachments: AnswerAttachment[]
+	): Prisma.AttachmentDeleteManyArgs {
+		const attachmentIds = attachments.map((attachment) => {
+			return attachment.id.toString();
+		});
+
+		return {
+			where: {
+				id: {
+					in: attachmentIds,
+				},
+			},
+		};
+	}
 }
