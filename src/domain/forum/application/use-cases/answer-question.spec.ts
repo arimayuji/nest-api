@@ -5,11 +5,14 @@ import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { InMemoryAnswerAttachmentsRepository } from "test/repositories/in-memory-answer-attachments";
 
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
+
 let inMemoryAnswersAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
 let sut: AnswerQuestionUseCase;
 
 describe("Create Answer", () => {
 	beforeEach(() => {
+		inMemoryAnswersAttachmentsRepository =
+			new InMemoryAnswerAttachmentsRepository();
 		inMemoryAnswersRepository = new InMemoryAnswersRepository(
 			inMemoryAnswersAttachmentsRepository
 		);
@@ -34,6 +37,27 @@ describe("Create Answer", () => {
 				expect.objectContaining({ attachmentId: new UniqueEntityId("1") }),
 				expect.objectContaining({ attachmentId: new UniqueEntityId("2") }),
 			]
+		);
+	});
+	it("should persist attachments when creating a new answer", async () => {
+		const result = await sut.execute({
+			authorId: "1",
+			questionId: "1",
+			content: "Hello World",
+			attachmentsIds: ["1", "2"],
+		});
+
+		expect(result.isRight()).toBe(true);
+		expect(inMemoryAnswersAttachmentsRepository.items).toHaveLength(2);
+		expect(inMemoryAnswersAttachmentsRepository.items).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					attachmentId: new UniqueEntityId("1"),
+				}),
+				expect.objectContaining({
+					attachmentId: new UniqueEntityId("2"),
+				}),
+			])
 		);
 	});
 });
