@@ -7,29 +7,32 @@ import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { StudentFactory } from "test/factories/make-student";
 import { QuestionFactory } from "test/factories/make-question";
+import { AttachmentFactory } from "test/factories/make-attachment";
 
 describe("Answer question (E2E)", () => {
 	let app: INestApplication;
 	let prisma: PrismaService;
 	let jwt: JwtService;
 	let studentFactory: StudentFactory;
+	let attachmentFactory: AttachmentFactory;
 	let questionFactory: QuestionFactory;
 
 	beforeAll(async () => {
 		const moduleRef = await Test.createTestingModule({
 			imports: [AppModule, DatabaseModule],
-			providers: [StudentFactory, QuestionFactory],
+			providers: [StudentFactory, QuestionFactory, AttachmentFactory],
 		}).compile();
 
 		app = moduleRef.createNestApplication();
 		jwt = moduleRef.get(JwtService);
 		prisma = moduleRef.get(PrismaService);
+		attachmentFactory = moduleRef.get(AttachmentFactory);
 		questionFactory = moduleRef.get(QuestionFactory);
 		studentFactory = moduleRef.get(StudentFactory);
 		await app.init();
 	});
 
-	test("[POST] /questions/:questionId/answers", async () => {
+	test("[POST] /answers/:answerId/answers", async () => {
 		const user = await studentFactory.makePrismaStudent();
 
 		const accessToken = jwt.sign({ sub: user.id.toString() });
@@ -40,11 +43,15 @@ describe("Answer question (E2E)", () => {
 
 		const questionId = question.id.toString();
 
+		const attachment1 = await attachmentFactory.makePrismaAttachment();
+		const attachment2 = await attachmentFactory.makePrismaAttachment();
+
 		const response = await request(app.getHttpServer())
 			.post(`/questions/${questionId}/answers`)
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				content: "New content",
+				attachments: [attachment1.id.toString(), attachment2.id.toString()],
 			});
 
 		expect(response.statusCode).toBe(201);
@@ -56,5 +63,12 @@ describe("Answer question (E2E)", () => {
 		});
 
 		expect(answerOnDatabase).toBeTruthy();
+
+		const attachmentsOnDatabase = await prisma.attachment.findMany({
+			where: {
+				answerId: answerOnDatabase?.id,
+			},
+		});
+		expect(attachmentsOnDatabase).toHaveLength(2);
 	});
 });
