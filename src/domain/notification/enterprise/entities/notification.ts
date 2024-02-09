@@ -1,14 +1,13 @@
 import { Entity } from "@/core/entities/entity";
 import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { Optional } from "@/core/types/optional";
-import { th } from "@faker-js/faker";
 
 export interface NotificationProps {
 	recipientId: UniqueEntityId;
 	title: string;
 	content: string;
 	createdAt: Date;
-	readAt?: Date;
+	readAt?: Date | null;
 }
 export class Notification extends Entity<NotificationProps> {
 	get recipientId() {
@@ -34,7 +33,7 @@ export class Notification extends Entity<NotificationProps> {
 	read() {
 		this.props.readAt = new Date();
 	}
-	
+
 	static create(
 		props: Optional<NotificationProps, "createdAt">,
 		id?: UniqueEntityId

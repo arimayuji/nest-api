@@ -1,16 +1,43 @@
 import { NotificationsRepository } from "@/domain/notification/application/repositories/notifications-repository";
 import { Notification } from "@/domain/notification/enterprise/entities/notification";
 import { Injectable } from "@nestjs/common";
+import { PrismaService } from "../prisma.service";
+import { PrismaNotificationMapper } from "../mappers/prisma-notification-mapper";
 
 @Injectable()
 export class PrismaNotificationsRepository implements NotificationsRepository {
-	create(notification: Notification): Promise<void> {
-		
+	constructor(private prisma: PrismaService) {}
+
+	async create(notification: Notification): Promise<void> {
+		const data = PrismaNotificationMapper.toPrisma(notification);
+
+		await this.prisma.notification.create({
+			data,
+		});
 	}
-	findById(id: string): Promise<Notification | null> {
-		
+
+	async findById(id: string): Promise<Notification | null> {
+		const notification = await this.prisma.notification.findUnique({
+			where: {
+				id,
+			},
+		});
+		if (!notification) {
+			return null;
+		}
+
+		return PrismaNotificationMapper.toDomain(notification);
 	}
-	save(notification: Notification): Promise<void> {
-		
+	async save(notification: Notification): Promise<void> {
+		const data = PrismaNotificationMapper.toPrisma(notification);
+
+		await Promise.all([
+			this.prisma.notification.update({
+				where: {
+					id: data.id,
+				},
+				data,
+			}),
+		]);
 	}
 }
