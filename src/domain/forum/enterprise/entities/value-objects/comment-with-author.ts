@@ -1,10 +1,11 @@
+import { UniqueEntityId } from "@/core/entities/unique-entity-id";
 import { ValueObject } from "@/core/entities/value-object";
 
 export interface CommentWithAuthorProps {
-	commentId: string;
+	commentId: UniqueEntityId;
 	content: string;
-	authorName: string;
-	authorId: string;
+	author: string;
+	authorId: UniqueEntityId;
 	createdAt: Date;
 	updatedAt?: Date | null;
 }
@@ -18,7 +19,7 @@ export class CommentWithAuthor extends ValueObject<CommentWithAuthorProps> {
 	}
 
 	get authorName() {
-		return this.props.authorName;
+		return this.props.author;
 	}
 
 	get authorId() {

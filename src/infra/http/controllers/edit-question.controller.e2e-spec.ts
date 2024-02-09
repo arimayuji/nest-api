@@ -64,13 +64,15 @@ describe("Edit Question (E2E)", () => {
 
 		const questionId = question.id.toString();
 
+		const attachment3 = await attachmentFactory.makePrismaAttachment();
+
 		const response = await request(app.getHttpServer())
 			.put(`/questions/${questionId}`)
 			.set("Authorization", `Bearer ${accessToken}`)
 			.send({
 				title: "New title",
 				content: "New content",
-				attachments: [attachment1.id.toString(), attachment2.id.toString()],
+				attachments: [attachment1.id.toString(), attachment3.id.toString()],
 			});
 
 		expect(response.statusCode).toBe(204);
@@ -88,8 +90,7 @@ describe("Edit Question (E2E)", () => {
 				questionId: questionOnDatabase?.id,
 			},
 		});
-		
-		const attachment3 = await attachmentFactory.makePrismaAttachment();
+
 		
 		expect(attachmentsOnDatabase).toHaveLength(2);
 		expect(attachmentsOnDatabase).toEqual(

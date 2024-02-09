@@ -34,7 +34,7 @@ import { CommentOnAnswerUseCase } from "@/domain/forum/application/use-cases/com
 import { DeleteAnswerCommentUseCase } from "@/domain/forum/application/use-cases/delete-answer-comment";
 import { DeleteAnswerCommentController } from "./controllers/delete-answer-comment.controller";
 import { FetchQuestionCommentsController } from "./controllers/fetch-question-comments.controller";
-import { FetchQuestionCommentsUseCase } from "@/domain/forum/enterprise/entities/fetch-question-comments";
+import { FetchQuestionCommentsUseCase } from "@/domain/forum/application/use-cases/fetch-question-comments";
 import { FetchAnswerCommentsController } from "./controllers/fetch-answer-comments.controller";
 import { FetchAnswerCommentsUseCase } from "@/domain/forum/application/use-cases/fetch-answer-comments";
 import { UploadAttachmentController } from "./controllers/upload-attachment.controller";

@@ -3,8 +3,16 @@ import { InMemoryQuestionsRepository } from "test/repositories/in-memory-questio
 import { GetQuestionBySlugUseCase } from "./get-question-by-slug";
 import { makeQuestion } from "test/factories/make-question";
 import { InMemoryQuestionAttachmentsRepository } from "test/repositories/in-memory-question-attachment";
+import { InMemoryStudentsRepository } from "test/repositories/in-memory-students-repository";
+import { InMemoryAttachmentsRepository } from "test/repositories/in-memory-attachments-repository";
+import { Slug } from "../../enterprise/entities/value-objects/slug";
+import { makeStudent } from "test/factories/make-student";
+import { makeAttachment } from "test/factories/make-attachment";
+import { makeQuestionAttachment } from "test/factories/make-question-attachment";
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository;
+let inMemoryStudentsRepository: InMemoryStudentsRepository;
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
 let sut: GetQuestionBySlugUseCase;
 
@@ -12,22 +20,57 @@ describe("Get Question by Slug", () => {
 	beforeEach(() => {
 		inMemoryQuestionAttachmentsRepository =
 			new InMemoryQuestionAttachmentsRepository();
+		inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository();
+		inMemoryStudentsRepository = new InMemoryStudentsRepository();
 		inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
-			inMemoryQuestionAttachmentsRepository
+			inMemoryQuestionAttachmentsRepository,
+			inMemoryStudentsRepository,
+			inMemoryAttachmentsRepository
 		);
+
 		sut = new GetQuestionBySlugUseCase(inMemoryQuestionsRepository);
 	});
 
-	it.skip("should be able to get a question by slug", async () => {
-		const newQuestion = makeQuestion();
+	it("should be able to get a question by slug", async () => {
+		const student = makeStudent({
+			name: "John Doe",
+		});
+
+		inMemoryStudentsRepository.items.push(student);
+
+		const newQuestion = makeQuestion({
+			authorId: student.id,
+			slug: Slug.create("example-question"),
+		});
 
 		await inMemoryQuestionsRepository.create(newQuestion);
+
+		const attachment = makeAttachment({
+			title: "some attachment",
+		});
+		inMemoryAttachmentsRepository.create(attachment);
+
+		inMemoryQuestionAttachmentsRepository.items.push(
+			makeQuestionAttachment({
+				attachmentId: attachment.id,
+				questionId: newQuestion.id,
+			})
+		);
 
 		const result = await sut.execute({
 			slug: "example-question",
 		});
 
-		expect(result.isRight()).toBe(true);
-		expect(result.value?.question.title).toEqual(newQuestion.title);
+		expect(result.value).toMatchObject({
+			question: expect.objectContaining({
+				title: newQuestion.title,
+				author: student.name,
+				attachments: [
+					expect.objectContaining({
+						title: "some attachment",
+					}),
+				],
+			}),
+		});
 	});
 });
