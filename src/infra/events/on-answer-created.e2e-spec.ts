@@ -9,6 +9,7 @@ import { StudentFactory } from "test/factories/make-student";
 import { QuestionFactory } from "test/factories/make-question";
 import { AttachmentFactory } from "test/factories/make-attachment";
 import { waitFor } from "test/utils/wait-for";
+import { DomainEvents } from "@/core/events/domain-events";
 
 describe("On answer created (E2E)", () => {
 	let app: INestApplication;
@@ -28,6 +29,8 @@ describe("On answer created (E2E)", () => {
 		prisma = moduleRef.get(PrismaService);
 		questionFactory = moduleRef.get(QuestionFactory);
 		studentFactory = moduleRef.get(StudentFactory);
+
+		DomainEvents.shouldRun = true;
 		await app.init();
 	});
 

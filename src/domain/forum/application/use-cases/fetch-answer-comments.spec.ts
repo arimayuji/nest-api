@@ -27,9 +27,9 @@ describe("Fetch Answer Comments", () => {
 
 		inMemoryStudentsRepository.items.push(student);
 
-		const answer1 = makeAnswerComment({ answerId, authorId: student.id });
+		const answerComment = makeAnswerComment({ answerId, authorId: student.id });
 
-		await inMemoryAnswerCommentsRepository.create(answer1);
+		await inMemoryAnswerCommentsRepository.create(answerComment);
 
 		const result = await sut.execute({
 			answerId: answerId.toString(),
@@ -41,11 +41,11 @@ describe("Fetch Answer Comments", () => {
 				expect.objectContaining({
 					props: {
 						author: "John Doe",
-						answerId: answer1.id,
+						commentId: answerComment.id,
 						authorId: student.id,
-						content: answer1.content,
-						createdAt: answer1.createdAt,
-						updatedAt: answer1.updatedAt,
+						content: answerComment.content,
+						createdAt: answerComment.createdAt,
+						updatedAt: answerComment.updatedAt,
 					},
 				}),
 			])
