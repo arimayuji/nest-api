@@ -16,14 +16,15 @@ datasource db {
 }
 
 model User {
-  id        String     @id @default(uuid())
-  name      String
-  email     String     @unique
-  password  String
-  questions Question[]
-  role      UserRole   @default(STUDENT)
-  Answer    Answer[]
-  comments  Comment[]
+  id           String         @id @default(uuid())
+  name         String
+  email        String         @unique
+  password     String
+  questions    Question[]
+  role         UserRole       @default(STUDENT)
+  Answer       Answer[]
+  comments     Comment[]
+  Notification Notification[]
 
   @@map("users")
 }
@@ -40,8 +41,8 @@ model Question {
   author       User      @relation(fields: [authorId], references: [id])
   bestAnswerId String?   @unique @map("best_answer_id")
 
-  answer     Answer[]
-  comments   Comment[]
+  answer      Answer[]
+  comments    Comment[]
   attachments Attachment[]
 
   @@map("questions")
@@ -67,7 +68,7 @@ model Comment {
   id         String    @id @default(uuid())
   content    String
   createdAt  DateTime  @default(now()) @map("created_at")
-  updatedAt  DateTime?  @default(now()) @map("updated_at")
+  updatedAt  DateTime? @default(now()) @map("updated_at")
   question   Question? @relation(fields: [questionId], references: [id])
   answer     Answer?   @relation(fields: [answerId], references: [id])
   author     User      @relation(fields: [authorId], references: [id])
@@ -88,4 +89,16 @@ model Attachment {
   answerId   String?   @map("answer_id")
 
   @@map("attachments")
+}
+
+model Notification {
+  id          String    @id @default(uuid())
+  recipientId String    @map("recipient_id")
+  title       String
+  content     String
+  readAt      DateTime? @map("read_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  recipient   User      @relation(fields: [recipientId], references: [id])
+
+  @@map("notifications")
 }
