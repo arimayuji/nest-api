@@ -43,7 +43,6 @@ describe("Authenticate Student", () => {
 		});
 	});
 
-	// RangeError: Maximum call stack size exceeded
 	it("should hash student password upon registration", async () => {
 		const student = makeStudent({
 			email: "johndoe@example.com",

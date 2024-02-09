@@ -1,5 +1,4 @@
 import { expect } from "vitest";
-import { FakeHasher } from "test/cryptography/fake-hasher";
 import { InMemoryAttachmentsRepository } from "test/repositories/in-memory-attachments-repository";
 import { UploadAndCreateAttachmentUseCase } from "./upload-and-create-attachment";
 import { FakeUploader } from "test/storage/fake-uploader";
@@ -7,7 +6,6 @@ import { InvalidAttachmentError } from "./errors/invalid-attachment-type-error";
 
 let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository;
 let fakeUploader: FakeUploader;
-let hashGenerator: FakeHasher;
 let sut: UploadAndCreateAttachmentUseCase;
 
 describe("Upload and create attachment", () => {

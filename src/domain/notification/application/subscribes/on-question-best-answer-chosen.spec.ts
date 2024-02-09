@@ -9,6 +9,8 @@ import { makeQuestion } from "test/factories/make-question";
 import { SpyInstance } from "vitest";
 import { OnQuestionBestAnswerChosen } from "./on-question-best-answer-chosen";
 import { waitFor } from "test/utils/wait-for";
+import { InMemoryAttachmentsRepository } from "test/repositories/in-memory-attachments-repository";
+import { InMemoryStudentsRepository } from "test/repositories/in-memory-students-repository";
 
 let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
@@ -16,7 +18,8 @@ let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
 let inMemoryNotificationsRepository: InMemoryNotificationsRepository;
 let sendNotificationUseCase: SendNotificationUseCase;
-
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository;
+let inMemoryStudentsRepository: InMemoryStudentsRepository;
 let sendNotificationExecuteSpy: SpyInstance;
 describe("On Question Best Answer Chosen", () => {
 	beforeEach(() => {
@@ -27,8 +30,12 @@ describe("On Question Best Answer Chosen", () => {
 
 		inMemoryQuestionAttachmentsRepository =
 			new InMemoryQuestionAttachmentsRepository();
+		inMemoryAttachmentsRepository = new InMemoryAttachmentsRepository();
+		inMemoryStudentsRepository = new InMemoryStudentsRepository();
 		inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
-			inMemoryQuestionAttachmentsRepository
+			inMemoryQuestionAttachmentsRepository,
+			inMemoryStudentsRepository,
+			inMemoryAttachmentsRepository
 		);
 
 		inMemoryAnswerAttachmentsRepository =
@@ -55,7 +62,7 @@ describe("On Question Best Answer Chosen", () => {
 		question.bestAnswerId = answer.id;
 
 		inMemoryQuestionsRepository.save(question);
-		
+
 		await waitFor(() => expect(sendNotificationExecuteSpy).toHaveBeenCalled());
 	});
 });

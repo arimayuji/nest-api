@@ -42,7 +42,7 @@ model Question {
 
   answer     Answer[]
   comments   Comment[]
-  attachmets Attachment[]
+  attachments Attachment[]
 
   @@map("questions")
 }

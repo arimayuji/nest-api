@@ -8,6 +8,8 @@ import { SendNotificationUseCase } from "../use-cases/send-notification";
 import { InMemoryNotificationsRepository } from "test/repositories/in-memory-notifications-repository";
 import { makeQuestion } from "test/factories/make-question";
 import { SpyInstance } from "vitest";
+import { InMemoryAttachmentsRepository } from "test/repositories/in-memory-attachments-repository";
+import { InMemoryStudentsRepository } from "test/repositories/in-memory-students-repository";
 
 let inMemoryQuestionsRepository: InMemoryQuestionsRepository;
 let inMemoryQuestionAttachmentsRepository: InMemoryQuestionAttachmentsRepository;
@@ -15,6 +17,8 @@ let inMemoryAnswerAttachmentsRepository: InMemoryAnswerAttachmentsRepository;
 let inMemoryAnswersRepository: InMemoryAnswersRepository;
 let inMemoryNotificationsRepository: InMemoryNotificationsRepository;
 let sendNotificationUseCase: SendNotificationUseCase;
+let inMemoryAttachmentsRepository: InMemoryAttachmentsRepository;
+let inMemoryStudentsRepository: InMemoryStudentsRepository;
 
 let sendNotificationExecuteSpy: SpyInstance;
 describe("On Answer Created", () => {
@@ -27,7 +31,9 @@ describe("On Answer Created", () => {
 		inMemoryQuestionAttachmentsRepository =
 			new InMemoryQuestionAttachmentsRepository();
 		inMemoryQuestionsRepository = new InMemoryQuestionsRepository(
-			inMemoryQuestionAttachmentsRepository
+			inMemoryQuestionAttachmentsRepository,
+			inMemoryStudentsRepository,
+			inMemoryAttachmentsRepository
 		);
 
 		inMemoryAnswerAttachmentsRepository =
